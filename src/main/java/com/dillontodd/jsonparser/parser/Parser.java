@@ -8,11 +8,11 @@ import java.util.List;
 public class Parser {
 
     private final List<Token> tokens;
-    private int currentPosition;
+    private int index;
 
     public Parser(List<Token> tokens) {
         this.tokens = tokens;
-        this.currentPosition = 0;
+        this.index = 0;
     }
 
     public ASTNode parse() throws Exception {
@@ -20,7 +20,7 @@ public class Parser {
             throw new Exception("json file is empty");
         }
 
-        Token currentToken = this.tokens.get(this.currentPosition);
+        Token currentToken = this.tokens.get(this.index);
         if (currentToken.getType() == TokenType.OPEN_BRACE) {
             return parseObject();
         } else {
@@ -29,10 +29,10 @@ public class Parser {
     }
 
     private Token advance() {
-        if (this.currentPosition >= this.tokens.size() - 1) {
+        if (this.index >= this.tokens.size() - 1) {
             return null;
         }
-        return this.tokens.get(++this.currentPosition);
+        return this.tokens.get(++this.index);
     }
 
     private ASTNode parseObject() throws Exception {
@@ -85,7 +85,7 @@ public class Parser {
     }
 
     private ASTNode parseValue() throws Exception {
-        Token token = tokens.get(this.currentPosition);
+        Token token = tokens.get(this.index);
         return switch (token.getType()) {
             case STRING -> new ASTNode(ASTNodeType.STRING, token.getValue());
             case TRUE -> new ASTNode(ASTNodeType.BOOLEAN, true);
