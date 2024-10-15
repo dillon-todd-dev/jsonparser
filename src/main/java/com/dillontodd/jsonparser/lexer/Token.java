@@ -13,4 +13,8 @@ public class Token {
     public TokenType getType() {
         return this.type;
     }
+
+    public String getValue() {
+        return this.value;
+    }
 }

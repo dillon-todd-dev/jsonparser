@@ -15,16 +15,16 @@ public class Parser {
         this.currentPosition = 0;
     }
 
-    public String parse() {
+    public ASTNode parse() throws Exception {
         if (this.tokens.isEmpty()) {
-            return "invalid json";
+            throw new Exception("json file is empty");
         }
 
         Token currentToken = this.tokens.get(this.currentPosition);
         if (currentToken.getType() == TokenType.OPEN_BRACE) {
             return parseObject();
         } else {
-            return "invalid json";
+            throw new Exception("json file must be start with '{'");
         }
     }
 
@@ -35,19 +35,65 @@ public class Parser {
         return this.tokens.get(++this.currentPosition);
     }
 
-    private String parseObject() {
+    private ASTNode parseObject() throws Exception {
+        ASTNode node = new ASTNode(ASTNodeType.OBJECT, null);
         Token token = advance();
         if (token == null) {
-            return "invalid json";
+            throw new Exception("no closing brace");
         }
 
         while (token.getType() != TokenType.CLOSE_BRACE) {
+            if (token.getType() == TokenType.STRING) {
+                String key = token.getValue();
+
+                token = advance();
+                if (token == null) {
+                    throw new Exception("invalid json. invalid key/value pair");
+                }
+
+                if (token.getType() != TokenType.COLON) {
+                    throw new Exception("invalid json. expected colon in key/value pair");
+                }
+
+                token = advance();
+                if (token == null) {
+                    throw new Exception("invalid json. invalid key/value pair");
+                }
+
+                ASTNode value = parseValue();
+                JsonKeyValuePair keyValuePair = new JsonKeyValuePair(key, value);
+                node.setNodeValue(keyValuePair);
+
+            } else {
+                throw new Exception("invalid json. Expected key/value pair");
+            }
+
             token = advance();
             if (token == null) {
-                return "invalid json";
+                throw new Exception("json object must end with '}'");
+            }
+
+            if (token.getType() == TokenType.COMMA) {
+                token = advance();
+                if (token == null) {
+                    throw new Exception("invalid json");
+                }
             }
         }
 
-        return "valid json";
+        return node;
+    }
+
+    private ASTNode parseValue() throws Exception {
+        Token token = tokens.get(this.currentPosition);
+        return switch (token.getType()) {
+            case STRING -> new ASTNode(ASTNodeType.STRING, token.getValue());
+            case TRUE -> new ASTNode(ASTNodeType.BOOLEAN, true);
+            case FALSE -> new ASTNode(ASTNodeType.BOOLEAN, false);
+            case INTEGER -> new ASTNode(ASTNodeType.NUMBER, Integer.valueOf(token.getValue()));
+            case DOUBLE -> new ASTNode(ASTNodeType.NUMBER, Double.valueOf(token.getValue()));
+            case NULL -> new ASTNode(ASTNodeType.NULL, null);
+            default -> throw new Exception("Unexpected token type: " + token.getValue());
+        };
     }
 }

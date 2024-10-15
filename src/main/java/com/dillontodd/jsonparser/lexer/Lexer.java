@@ -5,46 +5,41 @@ import java.util.List;
 
 public class Lexer {
 
-    private String input;
-    private int currentPosition;
+    private final String json;
+    private int index;
 
-    public Lexer(String input) {
-        this.input = input;
-        this.currentPosition = 0;
+    public Lexer(String json) {
+        this.json = json;
+        this.index = 0;
     }
 
     public List<Token> generateTokens() {
         List<Token> tokens = new ArrayList<>();
-        while (currentPosition < this.input.length()) {
-            char character = this.input.charAt(currentPosition);
-            switch (character) {
-                case '{':
-                    tokens.add(new Token(TokenType.OPEN_BRACE, String.valueOf(character)));
-                    break;
-                case '}':
-                    tokens.add(new Token(TokenType.CLOSE_BRACE, String.valueOf(character)));
-                    break;
-                case ':':
-                    tokens.add(new Token(TokenType.COLON, String.valueOf(character)));
-                    break;
-                case '"':
-                    tokens.add(generateStringToken());
-                    break;
-                default:
-                    break;
+        while (index < this.json.length()) {
+            char character = this.json.charAt(index);
+
+            if (character == '{') {
+                tokens.add(new Token(TokenType.OPEN_BRACE, String.valueOf(character)));
+            } else if (character == '}') {
+                tokens.add(new Token(TokenType.CLOSE_BRACE, String.valueOf(character)));
+            } else if (character == ':') {
+                tokens.add(new Token(TokenType.COLON, String.valueOf(character)));
+            } else if (character == '"') {
+                tokens.add(generateStringToken());
             }
-            currentPosition++;
+
+            index++;
         }
         return tokens;
     }
 
     private Token generateStringToken() {
-        StringBuilder stringSequence = new StringBuilder();
-        this.currentPosition++;
-        while (this.input.charAt(this.currentPosition) != '"') {
-            stringSequence.append(this.input.charAt(this.currentPosition));
-            this.currentPosition++;
+        StringBuilder stringBuilder = new StringBuilder();
+        this.index++;
+        while (this.json.charAt(this.index) != '"') {
+            stringBuilder.append(this.json.charAt(this.index));
+            this.index++;
         }
-        return new Token(TokenType.STRING, stringSequence.toString());
+        return new Token(TokenType.STRING, stringBuilder.toString());
     }
 }
