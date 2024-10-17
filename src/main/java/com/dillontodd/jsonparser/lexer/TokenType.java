@@ -10,5 +10,7 @@ public enum TokenType {
     DOUBLE,
     TRUE,
     FALSE,
-    NULL
+    NULL,
+    WHITESPACE,
+    NEW_LINE
 }
