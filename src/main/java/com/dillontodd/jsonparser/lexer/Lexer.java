@@ -1,11 +1,13 @@
 package com.dillontodd.jsonparser.lexer;
 
+import com.dillontodd.jsonparser.exceptions.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Lexer {
 
-    private final String json;
+    private String json;
     private int index;
 
     public Lexer(String json) {
@@ -13,32 +15,45 @@ public class Lexer {
         this.index = 0;
     }
 
-    public List<Token> generateTokens() {
+    public List<Token> generateTokens() throws JSONException {
         List<Token> tokens = new ArrayList<>();
-        while (index < this.json.length()) {
-            char character = this.json.charAt(index);
+        while (index < json.length()) {
+            char character = json.charAt(index);
 
             if (character == '{') {
                 tokens.add(new Token(TokenType.OPEN_BRACE, String.valueOf(character)));
+                index++;
             } else if (character == '}') {
                 tokens.add(new Token(TokenType.CLOSE_BRACE, String.valueOf(character)));
+                index++;
             } else if (character == ':') {
                 tokens.add(new Token(TokenType.COLON, String.valueOf(character)));
+                index++;
+            } else if (character == ',') {
+                tokens.add(new Token(TokenType.COMMA, String.valueOf(character)));
+                index++;
             } else if (character == '"') {
                 tokens.add(generateStringToken());
+                index++;
+            } else if (character == ' ') {
+                tokens.add(new Token(TokenType.WHITESPACE, String.valueOf(character)));
+                index++;
+            } else if (character == '\n') {
+                tokens.add(new Token(TokenType.NEW_LINE, String.valueOf(character)));
+                index++;
+            } else {
+                throw new JSONException("Invalid character: " + character);
             }
-
-            index++;
         }
         return tokens;
     }
 
     private Token generateStringToken() {
         StringBuilder stringBuilder = new StringBuilder();
-        this.index++;
-        while (this.json.charAt(this.index) != '"') {
-            stringBuilder.append(this.json.charAt(this.index));
-            this.index++;
+        index++;
+        while (this.json.charAt(index) != '"') {
+            stringBuilder.append(json.charAt(index));
+            index++;
         }
         return new Token(TokenType.STRING, stringBuilder.toString());
     }
