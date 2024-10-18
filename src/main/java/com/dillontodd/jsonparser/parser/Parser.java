@@ -98,7 +98,6 @@ public class Parser {
             nextToken();
             skipWhitespaceAndNewLines();
         } catch (JSONException ignored) {
-            ignored.printStackTrace();
             // ignore end of file index out of bounds
         }
         return true;
