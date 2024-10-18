@@ -105,6 +105,10 @@ public class Parser {
 
     private boolean parseValue() throws JSONException {
         Token token = skipWhitespaceAndNewLines();
-        return token.getType() == TokenType.STRING;
+
+        return token.getType() == TokenType.STRING ||
+                token.getType() == TokenType.TRUE ||
+                token.getType() == TokenType.FALSE ||
+                token.getType() == TokenType.NULL;
     }
 }
