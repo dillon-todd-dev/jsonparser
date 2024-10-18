@@ -1,16 +1,13 @@
 package com.dillontodd.jsonparser;
 
-import com.dillontodd.jsonparser.parser.ASTNode;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 public class JsonIOTest {
 
     @Test
     public void basicTest() {
-        ASTNode validJson = JsonIO.parseJson("{}");
-        ASTNode invalidJson = JsonIO.parseJson("{");
-
-        assert validJson.equals("valid json");
-        assert invalidJson.equals("invalid json");
+        Assertions.assertTrue(JsonIO.parseJson("{}"));
+        Assertions.assertFalse(JsonIO.parseJson("{"));
     }
 }

@@ -1,5 +1,6 @@
 package com.dillontodd.jsonparser.parser;
 
+import com.dillontodd.jsonparser.exceptions.JSONException;
 import com.dillontodd.jsonparser.lexer.Token;
 import com.dillontodd.jsonparser.lexer.TokenType;
 import org.junit.Test;
@@ -10,29 +11,25 @@ import java.util.List;
 public class ParserTest {
 
     @Test
-    public void basicParserTest() throws Exception {
-        // setup
+    public void basicParserTest() throws JSONException {
         List<Token> tokens = new ArrayList<>();
         tokens.add(new Token(TokenType.OPEN_BRACE, "{"));
         tokens.add(new Token(TokenType.CLOSE_BRACE, "}"));
-        Parser parser = new Parser(tokens);
+        boolean result = new Parser(tokens).parse();
 
-        ASTNode result = parser.parse();
-
-        assert result.equals("valid json");
+        assert result;
     }
 
     @Test
-    public void parserStringValue() throws Exception {
+    public void parserStringValue() throws JSONException {
         List<Token> tokens = new ArrayList<>();
         tokens.add(new Token(TokenType.OPEN_BRACE, "{"));
         tokens.add(new Token(TokenType.STRING, "test"));
         tokens.add(new Token(TokenType.COLON, ":"));
         tokens.add(new Token(TokenType.STRING, "test"));
         tokens.add(new Token(TokenType.CLOSE_BRACE, "}"));
-        Parser parser = new Parser(tokens);
+        boolean result = new Parser(tokens).parse();
 
-        ASTNode result = parser.parse();
-        assert result != null;
+        assert result;
     }
 }

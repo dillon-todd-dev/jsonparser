@@ -1,25 +1,23 @@
 package com.dillontodd.jsonparser;
 
+import com.dillontodd.jsonparser.exceptions.JSONException;
 import com.dillontodd.jsonparser.lexer.Lexer;
 import com.dillontodd.jsonparser.lexer.Token;
-import com.dillontodd.jsonparser.parser.ASTNode;
 import com.dillontodd.jsonparser.parser.Parser;
 
 import java.util.List;
 
 public class JsonIO {
 
-    public static ASTNode parseJson(String input) {
-        Lexer lexer = new Lexer(input);
-        List<Token> tokens = lexer.generateTokens();
-        Parser parser = new Parser(tokens);
-
-        ASTNode node = null;
+    public static boolean parseJson(String input) {
+        boolean valid;
         try {
-            node = parser.parse();
-        } catch (Exception exception) {
+            List<Token> tokens = new Lexer(input).generateTokens();
+            valid = new Parser(tokens).parse();
+        } catch (JSONException exception) {
+            valid = false;
             exception.printStackTrace();
         }
-        return node;
+        return valid;
     }
 }
