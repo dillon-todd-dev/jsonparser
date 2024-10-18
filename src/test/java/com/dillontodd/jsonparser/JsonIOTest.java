@@ -1,6 +1,7 @@
 package com.dillontodd.jsonparser;
 
 import java.io.InputStream;
+import java.util.Objects;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -11,8 +12,8 @@ public class JsonIOTest {
     public void step1Test() throws Exception {
         InputStream validStream = getClass().getResourceAsStream("/tests/step1/valid.json");
         InputStream invalidStream = getClass().getResourceAsStream("/tests/step1/invalid.json");
-        String validJson = new String(validStream.readAllBytes());
-        String invalidJson = new String(invalidStream.readAllBytes());
+        String validJson = new String(Objects.requireNonNull(validStream).readAllBytes());
+        String invalidJson = new String(Objects.requireNonNull(invalidStream).readAllBytes());
         validStream.close();
         invalidStream.close();
 
@@ -26,10 +27,10 @@ public class JsonIOTest {
         InputStream valid2Stream = getClass().getResourceAsStream("/tests/step2/valid2.json");
         InputStream invalidStream = getClass().getResourceAsStream("/tests/step2/invalid.json");
         InputStream invalid2Stream = getClass().getResourceAsStream("/tests/step2/invalid2.json");
-        String validString = new String(validStream.readAllBytes());
-        String valid2String = new String(valid2Stream.readAllBytes());
-        String invalidString = new String(invalidStream.readAllBytes());
-        String invalid2String = new String(invalid2Stream.readAllBytes());
+        String validString = new String(Objects.requireNonNull(validStream).readAllBytes());
+        String valid2String = new String(Objects.requireNonNull(valid2Stream).readAllBytes());
+        String invalidString = new String(Objects.requireNonNull(invalidStream).readAllBytes());
+        String invalid2String = new String(Objects.requireNonNull(invalid2Stream).readAllBytes());
         validStream.close();
         valid2Stream.close();
         invalidStream.close();
