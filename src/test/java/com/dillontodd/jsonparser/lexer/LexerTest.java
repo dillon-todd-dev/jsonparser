@@ -50,4 +50,21 @@ public class LexerTest {
         assert tokens.get(17).getType() == TokenType.CLOSE_BRACE;
         assert tokens.getLast().getType() == TokenType.NEW_LINE;
     }
+
+    @Test
+    public void differentValues() throws JSONException {
+        String input = """
+        {
+          "test": true,
+          "test1": false,
+          "test2": null
+        }
+        """;
+
+        List<Token> tokens = new Lexer(input).generateTokens();
+        assert tokens.size() == 27;
+        assert tokens.get(7).getType() == TokenType.TRUE;
+        assert tokens.get(15).getType() == TokenType.FALSE;
+        assert tokens.get(23).getType() == TokenType.NULL;
+    }
 }

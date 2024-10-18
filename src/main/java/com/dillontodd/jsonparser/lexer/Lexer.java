@@ -35,6 +35,27 @@ public class Lexer {
             } else if (character == '"') {
                 tokens.add(generateStringToken());
                 index++;
+            } else if (character == 't') {
+                if (json.startsWith("true", index)) {
+                    tokens.add(new Token(TokenType.TRUE, "true"));
+                    index += 4;
+                } else {
+                    throw new JSONException("Invalid character: " + character);
+                }
+            } else if (character == 'f') {
+                if (json.startsWith("false", index)) {
+                    tokens.add(new Token(TokenType.FALSE, "false"));
+                    index += 5;
+                } else {
+                    throw new JSONException("Invalid character: " + character);
+                }
+            } else if (character == 'n') {
+                if (json.startsWith("null", index)) {
+                    tokens.add(new Token(TokenType.NULL, "null"));
+                    index += 4;
+                } else {
+                    throw new JSONException("Invalid character: " + character);
+                }
             } else if (character == ' ') {
                 tokens.add(new Token(TokenType.WHITESPACE, String.valueOf(character)));
                 index++;
