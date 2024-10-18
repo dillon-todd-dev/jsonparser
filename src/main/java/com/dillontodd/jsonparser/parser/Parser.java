@@ -64,7 +64,8 @@ public class Parser {
         if (token.getType() != TokenType.OPEN_BRACE) {
             return false;
         }
-        token = nextToken();
+        nextToken();
+        token = skipWhitespaceAndNewLines();
 
         while (token.getType() != TokenType.CLOSE_BRACE) {
             if (token.getType() != TokenType.STRING) {
@@ -83,14 +84,28 @@ public class Parser {
             token = nextToken();
 
             if (token.getType() == TokenType.COMMA) {
-                token = nextToken();
+                nextToken();
+                token = skipWhitespaceAndNewLines();
+                if (token.getType() != TokenType.STRING) {
+                    throw new JSONException("Invalid character: ',' at line " + lineNumber + ":" + linePosition);
+                }
             }
+
+            token = skipWhitespaceAndNewLines();
+        }
+
+        try {
+            nextToken();
+            skipWhitespaceAndNewLines();
+        } catch (JSONException ignored) {
+            ignored.printStackTrace();
+            // ignore end of file index out of bounds
         }
         return true;
     }
 
-    private boolean parseValue() {
-        Token token = currentToken();
+    private boolean parseValue() throws JSONException {
+        Token token = skipWhitespaceAndNewLines();
         return token.getType() == TokenType.STRING;
     }
 }
